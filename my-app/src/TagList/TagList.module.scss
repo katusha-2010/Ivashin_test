@@ -1,0 +1,42 @@
+.tagslist {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.tagslist_item,
+.tagslist_item_active {
+  padding: 2px 25px 2px 5px;  
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tagslist_item_active {
+  background-color: aqua;
+}
+
+.tagslist_item:hover,
+.tagslist_item_active:hover {
+  font-weight: bold;
+}
+
+.rm {
+  position: absolute;
+  top:0;
+  right: 0;
+  color: white;
+  background-color: grey;
+  border-radius: 20px;
+  margin-left: 2px;  
+}
+
+.rm:hover {
+  color: red;
+  border-color: red;
+  cursor: pointer;
+}
+
+.wrapper_tags {
+  position: relative;
+}

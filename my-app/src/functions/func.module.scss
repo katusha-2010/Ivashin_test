@@ -1,0 +1,19 @@
+.btn {
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  font-weight: bold;
+}
+
+.form_add, .form_save {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.input_add, .input_save {
+  width: 50%;
+}

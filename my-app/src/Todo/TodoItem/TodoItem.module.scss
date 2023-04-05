@@ -1,0 +1,15 @@
+li {
+  list-style-type: none;
+  display: flex;
+  justify-content: end;
+  gap: 3px;
+}
+
+.btn {
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  font-weight: bold;
+}
