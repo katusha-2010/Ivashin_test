@@ -5,7 +5,9 @@
 }
 
 .tagslist_item,
-.tagslist_item_active {
+.tagslist_item_active,
+.tagslist_item_edit,
+.tagslist_item_active_edit {
   padding: 2px 25px 2px 5px;  
   border: 1px solid black;
   border-radius: 5px;
@@ -14,6 +16,11 @@
 
 .tagslist_item_active {
   background-color: aqua;
+}
+
+.tagslist_item_edit,
+.tagslist_item_active_edit {
+  border: 5px solid green;
 }
 
 .tagslist_item:hover,

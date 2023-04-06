@@ -13,9 +13,10 @@ export type TodoType = {
 
 export function App() {
   const [todosArr, setTodos] = useState<TodoType[]>(window.localStorage.getItem('todosArr')? JSON.parse(window.localStorage.getItem('todosArr')!) :[]);
-  const [todosTags, setTodosTags] = useState<{ [key: string]: Number[] }>(window.localStorage.getItem('todosTags')? JSON.parse(window.localStorage.getItem('todosTags')!) :{});
+  const [todosTags, setTodosTags] = useState<{ [key: string]: {'id': number, 'todosId':Number[]} }>(window.localStorage.getItem('todosTags')? JSON.parse(window.localStorage.getItem('todosTags')!) :{});
   const [filteredTodos, setFilteredTodos] = useState<TodoType[]>([]);
   const [filterArr, setFilterArr] = useState<String[]>([]);
+  const [tagsInEditTodoArr, setTagsInEditTodoArr] = useState<String[]>([]);
   const [changedTodo, setChangedTodo] = useState<TodoType>({
     id: 0,
     name: '',
@@ -37,6 +38,7 @@ export function App() {
     }]));
 
     addTagsFromNewTodo(id, name, todosTags, setTodosTags) 
+    console.log(todosTags)
   }
 
   function removeTodo(id:number) {
@@ -86,8 +88,10 @@ export function App() {
       filter.push(tag);
     }
 
-    setFilterArr(filter);
-    addFilteredTodos(filteredTodos, todosArr, filter, todosTags, setFilteredTodos);
+    const chekedFilter = filter.filter(el => Object.keys(todosTags).includes(String(el)))   
+
+    setFilterArr(chekedFilter);
+    addFilteredTodos(filteredTodos, todosArr, chekedFilter, todosTags, setFilteredTodos);
   }
 
   return (
@@ -97,8 +101,9 @@ export function App() {
         changedTodo={changedTodo}
         onCorrect={correctTodo}
         setChangedTodo={setChangedTodo}
+        setTagsInEditTodoArr={setTagsInEditTodoArr}
       />
-      <TagList onRemove={removeTag} todosTags={todosTags} onSetFilter={changeFilter} />
+      <TagList onRemove={removeTag} todosTags={todosTags} onSetFilter={changeFilter} tagsInEditTodoArr={tagsInEditTodoArr} />
       {todosArr?.length! > 0?
       filterArr.length !== 0?      
       <TodoList      

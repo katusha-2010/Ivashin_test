@@ -11,6 +11,7 @@ type FuncCorrect = {
   changedTodo:TodoType,
   onCorrect:(id:number, content:string) => void,
   setChangedTodo:(todo:TodoType) => void
+  setTagsInEditTodoArr:(todoName:String[]) => void
 }
 
 export function CreateFieldForNewTodo(props:FuncCreate) {
@@ -45,7 +46,10 @@ export function CorrectTodo(props:FuncCorrect) {
     name: '',
     flagChange: false
       })
-    } 
+    }
+    
+    const tagsArr:String[] = findAllTags(props.changedTodo.name) === null? [] : findAllTags(props.changedTodo.name);
+    props.setTagsInEditTodoArr(tagsArr);
   }, [props.changedTodo.name])
 
 
@@ -70,8 +74,16 @@ export function findAllTags(todo:string):String[] {
   return resultArr;
 }
 
-export function addTagsFromNewTodo(id:number, name:string, todosTags:{ [key: string]: Number[] }, setTodosTags:React.Dispatch<React.SetStateAction<{
-    [key: string]: Number[];
+export function addTagsFromNewTodo(id:number, name:string, todosTags:{
+    [key: string]: {
+        id: number;
+        todosId: Number[];
+    };
+}, setTodosTags:React.Dispatch<React.SetStateAction<{
+    [key: string]: {
+        id: number;
+        todosId: Number[];
+    };
 }>>) {
     const arrTags = findAllTags(name)? findAllTags(name) : [];
     const objectTodosTags = {...todosTags};
@@ -80,36 +92,43 @@ export function addTagsFromNewTodo(id:number, name:string, todosTags:{ [key: str
 
     if(arrKeys.length) {
       for(let key of Object.keys(objectTodosTags)) {
-        objectTodosTags[key].includes(id) ? existedTags.push(key) : null;
+        objectTodosTags[key].todosId.includes(id) ? existedTags.push(key) : null;
       }
     }
 
     const arrDiff = existedTags.filter(el => !arrTags.includes(el));
     
     for(let tag of arrDiff) {
-      const arrTag = objectTodosTags[String(tag)];
+      const arrTag = objectTodosTags[String(tag)].todosId;
       const number = arrTag.indexOf(id);
       arrTag.splice(number, 1);
       if(!arrTag.length) {delete objectTodosTags[String(tag)]}
     }
 
-    for(let tag of arrTags) {      
+    for(let tag of arrTags) {    
       arrKeys.includes(String(tag)) 
-        ? objectTodosTags[String(tag)].includes(id)
+        ? objectTodosTags[String(tag)].todosId.includes(id)
           ? null
-          : objectTodosTags[String(tag)].push(id)
-        : objectTodosTags[String(tag)] = [id]
+          : objectTodosTags[String(tag)].todosId.push(id)
+        : (()=> {
+          const numberId = Date.now() + 1;
+          objectTodosTags[String(tag)] = {'id':numberId, todosId:[id]}
+        })()
     setTodosTags(objectTodosTags);
-    }      
+    }    
   }
 
-export function addFilteredTodos(filteredTodos:TodoType[], todosArr:TodoType[], filter:String[], todosTags: {  
-  [key: string]: Number[]}, setFilteredTodos:React.Dispatch<React.SetStateAction<TodoType[]>>) {
+export function addFilteredTodos(filteredTodos:TodoType[], todosArr:TodoType[], filter:String[], todosTags: {
+    [key: string]: {
+        id: number;
+        todosId: Number[];
+    };
+}, setFilteredTodos:React.Dispatch<React.SetStateAction<TodoType[]>>) {
   const finalTodos = [...filteredTodos];
 
-  todosArr!.forEach(el => {          
+  todosArr!.forEach(el => {         
     for(let tag of filter) {
-      const arrIdByTag = todosTags[String(tag)];
+      const arrIdByTag = todosTags[String(tag)].todosId;
       arrIdByTag.includes(el.id)?
         finalTodos.includes(el)?
           null
@@ -121,7 +140,7 @@ export function addFilteredTodos(filteredTodos:TodoType[], todosArr:TodoType[], 
   let arrIdInFilter:Number[][] = [];
 
   for(let tag of filter) {
-    const arrIdByTag = todosTags[String(tag)];
+    const arrIdByTag = todosTags[String(tag)].todosId;
     arrIdInFilter.push(arrIdByTag);
   }
     
